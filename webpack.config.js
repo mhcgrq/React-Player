@@ -1,7 +1,20 @@
+const webpack = require('webpack');
 const path = require('path');
+const argv = require('yargs')
+    .alias('p', 'production')
+    .argv;
 
-module.exports = {
-    entry: ['./src/js/app.jsx'],
+const isDev = !argv.production || true;
+
+const config = {
+    entry: isDev
+    ? [
+        'react-hot-loader/patch',
+        'webpack-dev-server/client?http://0.0.0.0:3000',
+        'webpack/hot/only-dev-server',
+        './src/js/Root'
+    ]
+    : ['./src/js/Root'],
     output: {
         path: path.resolve(__dirname, './dist'),
         filename: 'bundle.js',
@@ -19,7 +32,11 @@ module.exports = {
             },
             {
                 test: /\.scss$/,
-                loaders: ['style-loader', 'css-loader?sourceMap', 'sass-loader?sourceMap'],
+                use: [
+                    'style-loader',
+                    { loader: 'css-loader', options: { sourceMap: isDev } },
+                    { loader: 'sass-loader', options: { sourceMap: isDev } },
+                ],
                 exclude: /node_modules/
             },
             {
@@ -28,5 +45,18 @@ module.exports = {
             },
         ]
     },
-    devtool: 'eval-source-map',
+    plugins: [
+        new webpack.DefinePlugin({
+            'process.env.NODE_ENV': isDev ? JSON.stringify('development') : JSON.stringify('production'),
+        })
+    ],
 };
+
+if (isDev) {
+    config.devtool = 'cheap-module-eval-source-map';
+    config.plugins.push(
+        new webpack.HotModuleReplacementPlugin()
+    );
+}
+
+module.exports = config;

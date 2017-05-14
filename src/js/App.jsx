@@ -1,5 +1,4 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
+import React, { PureComponent } from 'react';
 import axios from 'axios';
 import Sound from 'react-sound';
 import Search from './component/Search';
@@ -11,7 +10,7 @@ import '../scss/style.scss';
 
 const clientId = '632ae790e42397409c1b685aed76b562';
 
-class App extends React.Component {
+export default class App extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {
@@ -274,5 +273,3 @@ class App extends React.Component {
         );
     }
 }
-
-ReactDOM.render(<App />, document.getElementById('app'));

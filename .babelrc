@@ -1,17 +1,41 @@
 {
-    "presets": [
-	    [
-	    	"env",
-	    	{
-	    		"targets": {
-	    			"chrome": 56,
-	    			"node": "current"
-	    		},
-	    		"useBuiltIns": true,
-	    		"modules": false
-	    	}
-	    ], 
-	    "react",
-	    "stage-0"
-	]
+    "env": {
+        "development": {
+            "presets": [
+	            [
+	            	"env",
+	            	{
+	            		"targets": {
+	            			"chrome": 56,
+	            			"node": "current"
+	            		},
+	            		"useBuiltIns": true,
+	            		"modules": false
+	            	}
+	            ], 
+	            "react",
+	            "stage-0"
+	        ],
+            "plugins": [
+                "react-hot-loader/babel"
+            ]
+        },
+        "production": {
+            "presets": [
+	            [
+	            	"env",
+	            	{
+	            		"targets": {
+	            			"chrome": 56,
+	            			"node": "current"
+	            		},
+	            		"useBuiltIns": true,
+	            		"modules": false
+	            	}
+	            ], 
+	            "react",
+	            "stage-0"
+	        ]
+        }
+    }
 }
