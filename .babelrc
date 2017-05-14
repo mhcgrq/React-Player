@@ -1,0 +1,17 @@
+{
+    "presets": [
+	    [
+	    	"env",
+	    	{
+	    		"targets": {
+	    			"chrome": 56,
+	    			"node": "current"
+	    		},
+	    		"useBuiltIns": true,
+	    		"modules": false
+	    	}
+	    ], 
+	    "react",
+	    "stage-0"
+	]
+}
