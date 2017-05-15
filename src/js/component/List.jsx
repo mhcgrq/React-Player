@@ -22,8 +22,8 @@ export default class List extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {
-            compClassName: 'list',
-            iconClassName: 'iconfont',
+            isWrapperActive: false,
+            isIconActive: false,
         };
     }
     componentDidMount() {
@@ -32,25 +32,14 @@ export default class List extends PureComponent {
     componentWillUnmount() {
         window.removeEventListener('click', this.handleClick);
     }
-    handleButtonClick = () => {
-        if (this.state.compClassName === 'list') {
-            this.setState({
-                compClassName: 'list active',
-            });
-        } else {
-            this.setState({
-                compClassName: 'list',
-            });
-        }
-    }
     handleIconMouseDown = () => {
-        if (this.state.compClassName === '') {
-            this.setState({ iconClassName: 'iconfont active' });
+        if (!this.state.isWrapperActive) {
+            this.setState({ isIconActive: true });
         }
     }
     handleIconMouseUp = () => {
-        if (this.state.compClassName === '') {
-            this.setState({ iconClassName: 'iconfont' });
+        if (!this.state.compClassName) {
+            this.setState({ isIconActive: false });
         }
     }
     handleLiMouseDown = (e) => {
@@ -59,27 +48,38 @@ export default class List extends PureComponent {
     handleLiMouseUp = (e) => {
         e.target.className = '';
         this.setState({
-            compClassName: 'list',
+            isWrapperActive: false,
         });
     }
     handleClick = (e) => {
-        const thisNodeChildren = Array.prototype.slice.call(this.wrapper.querySelectorAll('*'));
-        if (thisNodeChildren.indexOf(e.target) === -1 && e.target !== this.wrapper) {
-            this.setState({ compClassName: 'list' });
+        const wrapper = document.querySelector(`#${this.props.compId}`);
+        const thisNodeChildren = Array.prototype.slice.call(wrapper.querySelectorAll('*'));
+        if (this.state.mounted && thisNodeChildren.indexOf(e.target) === -1 && e.target !== wrapper) {
+            this.setState({ isWrapperActive: false });
         }
+    }
+    toggleWrapperActive = () => {
+        this.toggleState('isWrapperActive');
+    }
+    toggleIconActive = () => {
+        this.toggleState('isIconActive');
+    }
+    toggleState = (key) => {
+        this.setState({
+            [key]: !this.state[key],
+        });
     }
     render() {
         return (
             <div
                 id={this.props.compId}
-                className={this.state.compClassName}
-                ref={(ref) => { this.wrapper = ref; }}
+                className={`list ${this.state.isWrapperActive ? 'active' : ''}`}
             >
-                <button className={this.props.buttonClassName + ' list-button'} onClick={this.handleButtonClick}>
+                <button className={`${this.props.buttonClassName} list-button`} onClick={this.toggleWrapperActive}>
                     <i
-                        onMouseDown={this.handleIconMouseDown}
-                        onMouseUp={this.handleIconMouseUp}
-                        className={this.state.iconClassName}
+                        onMouseDown={this.toggleIconActive}
+                        onMouseUp={this.toggleIconActive}
+                        className={`iconfont ${this.state.isIconActive ? 'active' : ''}`}
                         dangerouslySetInnerHTML={{ __html: this.props.iconCode }}
                     />
                 </button>

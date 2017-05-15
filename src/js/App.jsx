@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
 import axios from 'axios';
+import { Subject, Observable } from 'rxjs';
 import Sound from 'react-sound';
 import Search from './component/Search';
 import PlayList from './component/PlayList';
@@ -13,6 +14,7 @@ const clientId = '632ae790e42397409c1b685aed76b562';
 export default class App extends PureComponent {
     constructor(props) {
         super(props);
+        this.search$ = new Subject();
         this.state = {
             searchSuggestions: [],
             playListSuggestions: [],
@@ -37,6 +39,14 @@ export default class App extends PureComponent {
             total: '00:00',
             position: 0,
         };
+    }
+    componentDidMount() {
+        this.search$
+            .switchMap(value => Observable.fromPromise(axios.get(`https://api.soundcloud.com/tracks?client_id=${clientId}&q=${value}`)))
+            .subscribe((res) => { this.setState({ searchSuggestions: res.data }); });
+    }
+    componentWillUnmount() {
+        this.search$.unsubscribe();
     }
     // url拼接
     prepareUrl = (url) => {
@@ -130,23 +140,11 @@ export default class App extends PureComponent {
             position: audio.position / audio.duration,
         });
     }
-    /*
-     *
-     *以下是关于从API获取收据以及搜索的相关方法
-     *
-     */
-    //  从服务器获取searchSuggestions
-    getSuggestionsFromAPI = (value) => {
-        axios.get(`https://api.soundcloud.com/tracks?client_id=${clientId}&q=${value}`)
-            .then((response) => { this.setState({ searchSuggestions: response.data }); })
-            .catch((err) => { console.log(err); });
-    }
     //  获取搜索框中的输入值并传入state
     handleSearchInputChange = (e) => {
         if (e.target.value !== '') {
             this.setState({ searchInputValue: e.target.value });
-            this.getSuggestionsFromAPI(e.target.value);
-            console.log(e.target.value);
+            this.search$.next(e.target.value);
         } else {
             this.setState({
                 searchSuggestions: [],
@@ -232,7 +230,7 @@ export default class App extends PureComponent {
     }
     render() {
         return (
-            <div id="container" onClick={this.shouldHideComp}>
+            <div id="container">
                 <Search
                     handleInputChange={this.handleSearchInputChange}
                     suggestions={this.state.searchSuggestions}

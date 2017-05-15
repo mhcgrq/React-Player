@@ -6,10 +6,10 @@
 	            	"env",
 	            	{
 	            		"targets": {
-	            			"chrome": 56,
+	            			"chrome": 45,
 	            			"node": "current"
 	            		},
-	            		"useBuiltIns": true,
+	            		"useBuiltIns": false,
 	            		"modules": false
 	            	}
 	            ], 

@@ -1,5 +1,6 @@
 const webpack = require('webpack');
 const path = require('path');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 const argv = require('yargs')
     .alias('p', 'production')
     .argv;
@@ -18,7 +19,7 @@ const config = {
     output: {
         path: path.resolve(__dirname, './dist'),
         filename: 'bundle.js',
-        publicPath: path.join(__dirname, './dist/')
+        publicPath: path.join(__dirname, './dist')
     },
     resolve: {
         extensions: ['.js', '.jsx']
@@ -48,7 +49,10 @@ const config = {
     plugins: [
         new webpack.DefinePlugin({
             'process.env.NODE_ENV': isDev ? JSON.stringify('development') : JSON.stringify('production'),
-        })
+        }),
+        new HtmlWebpackPlugin({
+            template: path.join(__dirname, './index.html'),
+        }),
     ],
 };
 

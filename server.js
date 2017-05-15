@@ -1,12 +1,18 @@
 const webpack = require('webpack');
+const exec = require('child_process').exec;
 const WebpackDevServer = require('webpack-dev-server');
 const config = require('./webpack.config');
 
-new WebpackDevServer(webpack(config), {
+const app = new WebpackDevServer(webpack(config), {
     publicPath: config.output.publicPath,
     hot: true,
-    // historyApiFallback: true
-}).listen(3000, '0.0.0.0', (err) => {
+    historyApiFallback: true,
+    noInfo: true,
+});
+
+exec('webpack --watch');
+
+app.listen(3000, '0.0.0.0', (err) => {
     if (err) {
         console.log(err);
         return;
