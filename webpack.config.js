@@ -1,11 +1,12 @@
 const webpack = require('webpack');
 const path = require('path');
+const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const argv = require('yargs')
     .alias('p', 'production')
     .argv;
 
-const isDev = !argv.production || true;
+const isDev = argv.production ? !argv.production : true;
 
 const config = {
     entry: isDev
@@ -17,9 +18,9 @@ const config = {
     ]
     : ['./src/js/Root'],
     output: {
-        path: path.resolve(__dirname, './dist'),
+        path: path.resolve(__dirname, './dist/'),
         filename: 'bundle.js',
-        publicPath: path.join(__dirname, './dist')
+        publicPath: path.join(__dirname, './dist/')
     },
     resolve: {
         extensions: ['.js', '.jsx']
@@ -61,6 +62,13 @@ if (isDev) {
     config.plugins.push(
         new webpack.HotModuleReplacementPlugin()
     );
+} else {
+    // config.plugins.push(
+    //     new UglifyJSPlugin({
+    //         compress: false,
+    //         mangle: false,
+    //     })
+    // );
 }
 
 module.exports = config;

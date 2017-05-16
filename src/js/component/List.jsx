@@ -54,7 +54,7 @@ export default class List extends PureComponent {
     handleClick = (e) => {
         const wrapper = document.querySelector(`#${this.props.compId}`);
         const thisNodeChildren = Array.prototype.slice.call(wrapper.querySelectorAll('*'));
-        if (this.state.mounted && thisNodeChildren.indexOf(e.target) === -1 && e.target !== wrapper) {
+        if (thisNodeChildren.indexOf(e.target) === -1 && e.target !== wrapper) {
             this.setState({ isWrapperActive: false });
         }
     }
